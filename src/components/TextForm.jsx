@@ -7,12 +7,10 @@ export default function TextForm(prop) {
   const[hidden,sethidden]=useState(true);  //To display text summary and output only when there is text in the text field note:Could have been done better way
   
   let countWords=()=> {  //Function to count words
-    const arr = text.split(' ');
+    const arr = text.split(/\s+/);
   
     return arr.filter(word => word !== '').length;
   }
-
-
 
   const handleUppercase=()=>{  //To handle uppercase button
     // console.log("Button clicked")
@@ -98,13 +96,13 @@ export default function TextForm(prop) {
         <textarea className="form-control border border-primary" id="Mybox" rows="8" value={text}  placeholder='Enter your text.' onChange={handlechange}></textarea>
 
   
-         <button type="button" className="btn btn-primary mx-1 my-3" onClick={handleUppercase}>Convert to UpperCase</button>
+         <button type="button" className="btn btn-primary mx-1 my-2" onClick={handleUppercase} disabled={text.length===0}>Convert to UpperCase</button>
         
-        <button type="button" className="btn btn-primary mx-1 my-3" onClick={handleLowercase}>Convert to Lowercase</button>
+        <button type="button" className="btn btn-primary mx-1 my-2" onClick={handleLowercase}>Convert to Lowercase</button>
         
-        <button type="button" className="btn btn-primary mx-1 my-3" onClick={handleclearText}>Clear text</button>
+        <button type="button" className="btn btn-primary mx-1 my-2" onClick={handleclearText}>Clear text</button>
         
-        <button type="button" className="btn btn-primary mx-1 my-3" onClick={handlePasteText}>paste</button>
+        <button type="button" className="btn btn-primary mx-1 my-2" onClick={handlePasteText}>paste</button>
 
         <h4>{countWords()} words and {text.length} characters.</h4>
     </div>
