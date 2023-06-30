@@ -1,82 +1,74 @@
+import Button from './Button'; // button component with name and function as props and id is same as name
+
 import {useState} from 'react'
 
 export default function TextForm(prop) {
 
-  const [text,setText]=useState("") //State that sets the text
+  const [inputtext,setInputText]=useState("") //State that sets the text
+  const [outputtext,setOutputText]=useState("");
   const [textStatus,setTextStatus]=useState("") //state that tells the action performed on text
-  const[hidden,sethidden]=useState(true);  //To display text summary and output only when there is text in the text field note:Could have been done better way
+  const[hidden,setHidden]=useState(true);  //To display text summary and output only when there is text in the text field note:Could have been done better way
   
   let countWords=()=> {  //Function to count words
-    const arr = text.split(/\s+/);
-  
+    const arr = inputtext.split(/\s+/);
     return arr.filter(word => word !== '').length;
+  }
+
+  const disabledClick=()=>{  //This function returns alert message whenever user press on disabled button
+    if(inputtext.length===0){
+
+      prop.showAlert("danger","Failed: No text available");
+    }
+    // prop.showAlert("danger","Failed: No text available");
   }
 
   const handleUppercase=()=>{  //To handle uppercase button
     // console.log("Button clicked")
-    let upperCaseText=text.toUpperCase();
-    setTextStatus("UpperCase");
-    sethidden(false);
-    setText(upperCaseText);
-    if(countWords()!==0){
+    let upperCaseText=inputtext.toUpperCase();
+    setTextStatus("Text converted to UpperCase");
+    setOutputText(upperCaseText);
+    if(upperCaseText.length){
     prop.showAlert("success","Success: To uppercase")
-    }
-    else{
-      prop.showAlert("danger","Failed: No text available")
-      sethidden(true);
+    setHidden(false);
     }
   }
 
-  const handlechange=(event)=>{ //to handle the change in thebtext field
-    setText(event.target.value)
-    // console.log("on change")
-    
-  }
 
   const handleLowercase=()=>{ //to handle lowercase button
     // console.log(text)
-    let lowerCaseText=text.toLowerCase();
-    setTextStatus("LowerCase");
-    sethidden(false);
-    setText(lowerCaseText);
-    if(countWords()!==0){
+    let lowerCaseText=inputtext.toLowerCase();
+    setTextStatus("Text converted to LowerCase");
+    setOutputText(lowerCaseText);
+    if(lowerCaseText.length){
       prop.showAlert("success","Success: To lowercase")
-      }
-      else{
-        prop.showAlert("danger","Failed: No text available")
-        sethidden(true);
+      setHidden(false);
       }
   }
   
   const handleclearText=()=>{ //to handle clear button
-    setText("");
+    setInputText("");
     document.getElementById("Mybox").value=''; 
-    sethidden(true);
-    if(countWords()!==0){
+    if(inputtext.length){
       prop.showAlert("warning","cleared text")
-      }
-      else{
-        prop.showAlert("danger","Failed: No text available")
-        sethidden(true);
+      setHidden(true);
       }
   }
 
   const handleCopyText=()=>{  //to handle copy button
-    console.log(text)
-    navigator.clipboard.writeText(text);
-    if(countWords()!==0){
+    console.log(inputtext)
+    navigator.clipboard.writeText(outputtext);
+    if(outputtext.length){
     prop.showAlert("success","Success: Copied to clipboard")
     }
     else{
       prop.showAlert("danger","Failed: No text available")
-      sethidden(true);
     }
     
   }
 
   async function handlePasteText(){ //to handle paste button
     let pastedText=await navigator.clipboard.readText();
-    setText(pastedText);
+    setInputText(pastedText);
     if((await navigator.clipboard.readText()).length===0){
       prop.showAlert("danger","Failed: No text available")
       }
@@ -85,7 +77,57 @@ export default function TextForm(prop) {
       }
       
     }
+
+    const handleExtraSpaces=()=>{  //This function removes extra spaces from text
+      let removedspacetext = inputtext.replace(/\s+/g,' ').trim(); //trim() removes extra spaces from begining and ending of text
+        if(removedspacetext===inputtext){ //if text have no extra space it sends an alert
+          prop.showAlert('danger','No extra spaces in text')
+        }else{
+        setTextStatus("Removed extra space from text ")
+        setOutputText(removedspacetext);
+        setHidden(false);
+        prop.showAlert('success','Success: Removed extra spaces from the text');
+        }
+    }
+
+    const handleEmailExtracts=()=>{ //function to handle email extract button
+      let extractedemails=inputtext.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/g) //a regular  expression or regex to search for emails /g menas global it search the whole text
+      if(extractedemails){
+       prop.showAlert('success','Success: Emails extracted')
+       setTextStatus("Emails extracted from text ")
+       setOutputText(extractedemails.map((i,key)=>{
+        
+        return <h4 key={key}>{key+1}. {i}</h4>
+        
+      }))  //here we return a div for each email so each email is printed in a new                        linenote-------->refrence from stackoverflow 
+       setHidden(false);
+
+      }
+      else{
+        prop.showAlert('danger','Error: No emails to extract')
+      }
+      // console.log(extractedemails);
+    }
+
+    const handleDownload = ()=>{
+      console.log("Downloading.........");
+      const element = document.createElement("a");
+      const file = new Blob([outputtext],    
+                  {type: "text/plain"});
+      element.href = URL.createObjectURL(file);
+      element.download = "myFile.txt";
+      document.body.appendChild(element);
+      element.click(); //referred from stackoverflow
+      
+    }
+
+    const handlechange=(event)=>{ //to handle the change in the text field
+      setInputText(event.target.value);
+
+    }
+
   
+
 
   return (
     <>
@@ -93,28 +135,49 @@ export default function TextForm(prop) {
     <div className="mb-3 container">
         <h1>{prop.heading}</h1>
         
-        <textarea className="form-control border border-primary" id="Mybox" rows="8" value={text}  placeholder='Enter your text.' onChange={handlechange}></textarea>
+        <textarea style={{resize:'none'}} className="form-control border border-primary" id="Mybox" rows="8" value={inputtext} placeholder='Enter your text.' onChange={handlechange}></textarea>
+        
+        <div id='buttons'>
+        <span id="disabledClick" onClick={disabledClick} className='d-inline-flex'>
 
-  
-         <button type="button" className="btn btn-primary mx-1 my-2" onClick={handleUppercase} disabled={text.length===0}>Convert to UpperCase</button>
+         <Button name='Convert to UpperCase' function={handleUppercase} disabled={inputtext.length===0} />
         
-        <button type="button" className="btn btn-primary mx-1 my-2" onClick={handleLowercase}>Convert to Lowercase</button>
+         <Button name='Convert to Lowercase' function={handleLowercase} disabled={inputtext.length===0} />
         
-        <button type="button" className="btn btn-primary mx-1 my-2" onClick={handleclearText}>Clear text</button>
-        
-        <button type="button" className="btn btn-primary mx-1 my-2" onClick={handlePasteText}>paste</button>
+         <Button name='Remove extra spaces' function={handleExtraSpaces} disabled={inputtext.length===0} />
 
-        <h4>{countWords()} words and {text.length} characters.</h4>
+         <Button name='Extract Email address' function={handleEmailExtracts} disabled={inputtext.length===0} />
+
+         <Button name='Clear text' function={handleclearText} disabled={inputtext.length===0} />
+
+         <Button name='Paste' function={handlePasteText} />
+         
+
+        </span>
+        
+        </div>
+
+        <h4>{countWords()} words and {inputtext.length} characters.</h4>
     </div>
 
-  
-    <div className='container' hidden={hidden} >
-      <h3>Text converted to {textStatus}</h3>
-      <h4>{text}</h4>
-      <button type="button" className="btn btn-primary mx-1 my-3" onClick={handleCopyText}>Copy text</button>
+    
+     {/* console.log(inputtext.length) */}
+    <div className='container' hidden={hidden} > 
+      <h3>{textStatus}</h3>
+      <div className='p-3 bg-info bg-opacity-10 border border-2 border-info rounded'>
+      <h4>{outputtext}</h4>
+      </div>
+      <Button name='Copy text' function={handleCopyText} />
+      <Button name="Download (*.txt)" function={handleDownload} />
     </div>
+    
+    
+    
+
+    
 
 
     </>
+    
   )
 }
