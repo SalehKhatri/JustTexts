@@ -15,13 +15,14 @@ export default function TextForm(prop) {
     return arr.filter(word => word !== '').length;
   }
 
-  const disabledClick=()=>{  //This function returns alert message whenever user press on disabled button
-    if(inputtext.length===0){
+  // const disabledClick=()=>{
+  //   console.log("Clicked");  //This function returns alert message whenever user press on disabled button
+  //   if(inputtext.length===0){
 
-      prop.showAlert("danger","Failed: No text available");
-    }
-    // prop.showAlert("danger","Failed: No text available");
-  }
+  //     prop.showAlert("danger","Failed: No text available");
+  //   }
+  //   // prop.showAlert("danger","Failed: No text available");
+  // }           //-------------->removed the utility<------------------------------
 
   const handleUppercase=()=>{  //To handle uppercase button
     // console.log("Button clicked")
@@ -50,7 +51,7 @@ export default function TextForm(prop) {
     setInputText("");
     document.getElementById("Mybox").value=''; 
     if(inputtext.length){
-      prop.showAlert("warning","cleared text")
+      prop.showAlert("warning","Cleared text")
       setHidden(true);
       }
   }
@@ -137,19 +138,21 @@ export default function TextForm(prop) {
         
         <textarea style={{resize:'none'}} className="form-control text-xl font-medium border border-primary" id="Mybox" rows="8" value={inputtext} placeholder='Enter your text.' onChange={handlechange}></textarea>
         {/* /*990    */}
-        <div id='buttons' className='inline-grid grid-cols-3 gap-1 w-full sm:w-fit  sm:inline-flex  justify-center items-center ' onClick={disabledClick}>  
+
+        <div id='buttons' className='inline-grid grid-cols-3 gap-1 w-full sm:w-fit  sm:inline-flex  justify-center items-center '>  
 
          <Button name='UpperCase' function={handleUppercase} disabled={inputtext.length===0} />
         
          <Button name='Lowercase' function={handleLowercase} disabled={inputtext.length===0} />
         
-         <Button name='Remove spaces' function={handleExtraSpaces} disabled={inputtext.length===0} />
+         <Button name='Remove spaces' function={handleExtraSpaces} className={'text-xs'} disabled={inputtext.length===0} />
 
-         <Button name='Extract Emails' function={handleEmailExtracts} disabled={inputtext.length===0} />
+         <Button name='Extract Emails' function={handleEmailExtracts}  disabled={inputtext.length===0} />
 
          <Button name='Clear' function={handleclearText} disabled={inputtext.length===0} />
 
          <Button name='Paste' function={handlePasteText} />
+
          
         
         </div>
@@ -162,7 +165,7 @@ export default function TextForm(prop) {
     <div className='container' hidden={hidden} > 
       <h3 className='text-3xl font-semibold my-2'>{textStatus}</h3>
       <div className='p-3 bg-info bg-opacity-10  border-2 border-info rounded'>
-      <h4 className='font-medium text-xl'>{outputtext}</h4>
+      <h3 className='font-medium text-xl'>{outputtext}</h3>
       </div>
       <Button name='Copy text' function={handleCopyText} />
       <Button name="Download (*.txt)" function={handleDownload} />
