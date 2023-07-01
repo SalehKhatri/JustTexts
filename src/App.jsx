@@ -20,17 +20,17 @@ function App() {
   }
 
   return(
-    <>
+    <div className=''>
     
    <Navbar title="JustTexts"/> {/* <----Passsing title as props------> */}
-   <div className="container my-3" >
+   <div className="container-fluid my-3" >
         < Alert alert={alert}/>
 
           <TextForm heading="Enter your text to be analyzed" showAlert={showAlert}/> {/*Pasiing props to the component*/}
         
     </div>
  
-    </>
+    </div>
   );
 }
 

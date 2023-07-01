@@ -1,3 +1,4 @@
+
 import Button from './Button'; // button component with name and function as props and id is same as name
 
 import {useState} from 'react'
@@ -93,10 +94,9 @@ export default function TextForm(prop) {
     const handleEmailExtracts=()=>{ //function to handle email extract button
       let extractedemails=inputtext.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/g) //a regular  expression or regex to search for emails /g menas global it search the whole text
       if(extractedemails){
-       prop.showAlert('success','Success: Emails extracted')
+        prop.showAlert('success','Success: Emails extracted')
        setTextStatus("Emails extracted from text ")
        setOutputText(extractedemails.map((i,key)=>{
-        
         return <h4 key={key}>{key+1}. {i}</h4>
         
       }))  //here we return a div for each email so each email is printed in a new                        linenote-------->refrence from stackoverflow 
@@ -132,40 +132,37 @@ export default function TextForm(prop) {
   return (
     <>
 
-    <div className="mb-3 container">
-        <h1>{prop.heading}</h1>
+    <div className="mb-3">
+        <h1 className='font-semibold text-3xl sm:text-4xl mb-4'>{prop.heading}</h1>
         
-        <textarea style={{resize:'none'}} className="form-control border border-primary" id="Mybox" rows="8" value={inputtext} placeholder='Enter your text.' onChange={handlechange}></textarea>
-        
-        <div id='buttons'>
-        <span id="disabledClick" onClick={disabledClick} className='d-inline-flex'>
+        <textarea style={{resize:'none'}} className="form-control text-xl font-medium border border-primary" id="Mybox" rows="8" value={inputtext} placeholder='Enter your text.' onChange={handlechange}></textarea>
+        {/* /*990    */}
+        <div id='buttons' className='inline-grid grid-cols-3 gap-1 w-full sm:w-fit  sm:inline-flex  justify-center items-center ' onClick={disabledClick}>  
 
-         <Button name='Convert to UpperCase' function={handleUppercase} disabled={inputtext.length===0} />
+         <Button name='UpperCase' function={handleUppercase} disabled={inputtext.length===0} />
         
-         <Button name='Convert to Lowercase' function={handleLowercase} disabled={inputtext.length===0} />
+         <Button name='Lowercase' function={handleLowercase} disabled={inputtext.length===0} />
         
-         <Button name='Remove extra spaces' function={handleExtraSpaces} disabled={inputtext.length===0} />
+         <Button name='Remove spaces' function={handleExtraSpaces} disabled={inputtext.length===0} />
 
-         <Button name='Extract Email address' function={handleEmailExtracts} disabled={inputtext.length===0} />
+         <Button name='Extract Emails' function={handleEmailExtracts} disabled={inputtext.length===0} />
 
-         <Button name='Clear text' function={handleclearText} disabled={inputtext.length===0} />
+         <Button name='Clear' function={handleclearText} disabled={inputtext.length===0} />
 
          <Button name='Paste' function={handlePasteText} />
          
-
-        </span>
         
         </div>
 
-        <h4>{countWords()} words and {inputtext.length} characters.</h4>
+        <h4 className='font-semibold text-xl'>{countWords()} words and {inputtext.length} characters.</h4>
     </div>
 
     
      {/* console.log(inputtext.length) */}
     <div className='container' hidden={hidden} > 
-      <h3>{textStatus}</h3>
-      <div className='p-3 bg-info bg-opacity-10 border border-2 border-info rounded'>
-      <h4>{outputtext}</h4>
+      <h3 className='text-3xl font-semibold my-2'>{textStatus}</h3>
+      <div className='p-3 bg-info bg-opacity-10  border-2 border-info rounded'>
+      <h4 className='font-medium text-xl'>{outputtext}</h4>
       </div>
       <Button name='Copy text' function={handleCopyText} />
       <Button name="Download (*.txt)" function={handleDownload} />
